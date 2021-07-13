@@ -1,4 +1,18 @@
-**Run locally**
+## General reference from Azure
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python
+
+## Create a durable function app
+```shell
+# remember to run the command from a clean directory
+func function new -l python -t "Durable Functions HTTP starter" -n starter -a function
+func function new -l python -t "Durable Functions orchestrator" -n orchestrator
+func function new -l python -t "Durable Functions activity" -n worker
+
+# download configuration from azure to create a local.settings.json (not tracked by git)
+func azure functionapp fetch-app-settings YOUR_AZURE_APP
+```
+
+## Run locally
 ```shell
 func start --python
 Found Python version 3.8.2 (python3).
@@ -142,6 +156,17 @@ For detailed output, run func with --verbose flag.
 
 **Run with settings of one activity function on one host**
 The background of this setting is on [github](https://github.com/Azure/azure-functions-durable-python/issues/179). More on performance and scale is [here](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-perf-and-scale).
+
+An extraction:
+```By default, a single function app instance can process multiple executions at the same time. It looks like what happened here is that when_all queued up a few tasks and a single function app instance grabbed them all. But since this is a CPU bound workload, it is only able to work on them one at a time.
+
+Try to lower your maxConcurrentActivity functions to 1. This might seem counterintuitive, but it’s a per instance setting. In this case, a single instance should only grab a single message from the activity work item queue, and this should leave the other activity requests on the queue and the platform should scale out to more instances which will only process one activity at a time. Please give it a try and see if it makes a difference.
+
+If you have access to more CPU cores or if your function doesn’t actually use up all the CPU, you can try increasing the worker process count (this is also per instance): https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python#use-multiple-language-worker-processes
+
+Adding more processes comes with overhead, so experiment with it.
+```
+
 ```json
   "extensions": {
     "durableTask": {
@@ -166,3 +191,26 @@ The background of this setting is on [github](https://github.com/Azure/azure-fun
     "lastUpdatedTime": "2021-07-07T01:55:22Z"
 }
 ```
+
+The considerations of orchestrator and activity functions from the [official document](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-perf-and-scale):
+
+**Thread usage**
+
+Orchestrator functions are executed on a single thread to ensure that execution can be deterministic across many replays. Because of this single-threaded execution, it's important that orchestrator function threads do not perform CPU-intensive tasks, do I/O, or block for any reason. Any work that may require I/O, blocking, or multiple threads should be moved into activity functions.
+
+Activity functions have all the same behaviors as regular queue-triggered functions. They can safely do I/O, execute CPU intensive operations, and use multiple threads. Because activity triggers are stateless, they can freely scale out to an unbounded number of VMs.
+
+Basically orchestrator is just for controlling flow, so make it is simple.
+
+**Concurrency throttles**
+
+Azure Functions supports executing multiple functions concurrently within a single app instance. This concurrent execution helps increase parallelism and minimizes the number of "cold starts" that a typical app will experience over time. However, high concurrency can exhaust per-VM system resources such network connections or available memory. Depending on the needs of the function app, it may be necessary to throttle the per-instance concurrency to avoid the possibility of running out of memory in high-load situations.
+
+Activity and orchestrator function concurrency limits can be configured in the `host.json` file. The relevant settings are `durableTask/maxConcurrentActivityFunctions` for activity functions and `durableTask/maxConcurrentOrchestratorFunctions` for orchestrator function. These settings control the maximum number of orchestrator or activity functions that can be loaded into memory concurrently.
+
+**Language runtime considerations**
+The language runtime you select may impose strict concurrency restrictions on your functions. For example, Durable Function apps written in Python or PowerShell may only support running a single function at a time on a single VM. This can result in significant performance problems if not carefully accounted for. For example, if an orchestrator fans-out to 10 activities but the language runtime restricts concurrency to just one function, then 9 of the 10 activity functions will be stuck waiting for a chance to run. Furthermore, these 9 stuck activities will not be able to be load balanced to any other workers because the Durable Functions runtime will have already loaded them into memory. This becomes especially problematic if the activity functions are long-running.
+
+Python places a restriction on concurrency, you should update the Durable Functions concurrency settings to match the concurrency settings of Python. This ensures that the Durable Functions runtime will not attempt to run more functions concurrently than is allowed by Python runtime, allowing any pending activities to be load balanced to other VMs. For example, if you have a Python app that restricts concurrency to 4 functions (perhaps it's only configured with 4 threads on a single language worker process or 1 thread on 4 language worker processes) then you should configure both `maxConcurrentOrchestratorFunctions` and `maxConcurrentActivityFunctions` to `4`.
+
+For more information and performance recommendations for Python, see [Improve throughput performance of Python apps](https://docs.microsoft.com/en-us/azure/azure-functions/python-scale-performance-reference) in Azure Functions. The techniques mentioned in this Python developer reference documentation can have a substantial impact on Durable Functions performance and scalability.
