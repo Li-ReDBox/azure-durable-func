@@ -45,4 +45,4 @@ def orchestrator_simple_chain(context: df.DurableOrchestrationContext):
     return result4
 
 
-main = df.Orchestrator.create(orchestrator_simple_chain)
+main = df.Orchestrator.create(orchestrator_activity_chain)

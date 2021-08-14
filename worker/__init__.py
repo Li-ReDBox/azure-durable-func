@@ -11,4 +11,10 @@ import time
 def main(name: str) -> str:
     start = datetime.datetime.now().isoformat()
     time.sleep(random.randint(1, 10000)/1000)
-    return f"Hello {name}! Process duration: {start} - {datetime.datetime.now().isoformat()}"
+
+    city = name.split(" ")
+    if len(city) == 1:
+        return f"Hello {name}! Process duration: {start} - {datetime.datetime.now().isoformat()}"
+
+    result = f"{(' ').join(city[1:])}, Hello {city[0]}! Process duration: {start} - {datetime.datetime.now().isoformat()}"
+    return result

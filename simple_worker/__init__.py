@@ -3,4 +3,11 @@
 # This worker only process determinable info
 
 def main(name: str) -> str:
-    return f"Hello {name}!"
+    print("In ", __name__, name, " has type of", type(name))
+    city = name.split(" ")
+    if len(city) == 1:
+        return f"Hello {name}!"
+
+    result = f"{(' ').join(city[1:])} Hello {city[0]}!"
+    print(f"Will return {result}")
+    return result

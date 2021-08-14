@@ -139,98 +139,51 @@ curl -v http://localhost:7071/api/orchestrators/orchestrator
 [2021-07-07T01:29:33.352Z] Executed 'Functions.orchestrator' (Succeeded, Id=6fe09d8d-9186-4fff-95c4-022d0b2109f6, Duration=19ms)
 ```
 
-### Chaining activities, say one activity receives and returns a new value based on input, it looks like there is a sandwich. How to explain?
-**Chaining 4 activities: 4 yields, 4 + 1 histories, worker returns f"Hello {name}! Process duration: {start} - {datetime.datetime.now().isoformat()}"**
+**Chaining 4 activities: 4 yields, 4 + 1 histories, activities take time to process**
 ```log
-[2021-08-13T23:51:21.466Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=d21ad124-694e-47bc-bdd6-1aeb7def93ed)
-[2021-08-13T23:51:21.477Z] Comes into orchestrator
-[2021-08-13T23:51:21.498Z] Executed 'Functions.orchestrator' (Succeeded, Id=d21ad124-694e-47bc-bdd6-1aeb7def93ed, Duration=41ms)
-[2021-08-13T23:51:21.659Z] Executing 'Functions.worker' (Reason='(null)', Id=f2245e9c-85a4-4d56-8b10-b122f4cf1eb1)
-[2021-08-13T23:51:24.381Z] Executed 'Functions.worker' (Succeeded, Id=f2245e9c-85a4-4d56-8b10-b122f4cf1eb1, Duration=2722ms)
-[2021-08-13T23:51:24.715Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=3245628e-ec43-45c7-89ae-ff0a3d9cb3ae)
-[2021-08-13T23:51:24.720Z] Comes into orchestrator
-[2021-08-13T23:51:24.720Z] Hello Tokyo! Process duration: 2021-08-14T09:21:21.661636 - 2021-08-14T09:21:24.377630
-[2021-08-13T23:51:24.723Z] Executed 'Functions.orchestrator' (Succeeded, Id=3245628e-ec43-45c7-89ae-ff0a3d9cb3ae, Duration=9ms)
-[2021-08-13T23:51:24.863Z] Executing 'Functions.worker' (Reason='(null)', Id=a56ee0ed-63b0-44f3-86c6-ae9ed61e6099)
-[2021-08-13T23:51:26.352Z] Executed 'Functions.worker' (Succeeded, Id=a56ee0ed-63b0-44f3-86c6-ae9ed61e6099, Duration=1488ms)
-[2021-08-13T23:51:26.616Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=5aa8c7ba-5c0a-42d7-9be0-c538da8be70a)
-[2021-08-13T23:51:26.627Z] Comes into orchestrator
-[2021-08-13T23:51:26.627Z] Hello Tokyo! Process duration: 2021-08-14T09:21:21.661636 - 2021-08-14T09:21:24.377630
-[2021-08-13T23:51:26.628Z] Executed 'Functions.orchestrator' (Succeeded, Id=5aa8c7ba-5c0a-42d7-9be0-c538da8be70a, Duration=12ms)
-[2021-08-13T23:51:26.729Z] Executing 'Functions.worker' (Reason='(null)', Id=e70600ff-cd11-44ec-8e10-6f3cacb440fb)
-[2021-08-13T23:51:29.610Z] Executed 'Functions.worker' (Succeeded, Id=e70600ff-cd11-44ec-8e10-6f3cacb440fb, Duration=2880ms)
-[2021-08-13T23:51:29.875Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=72c21530-023a-40a5-bfe3-8f072fe4f793)
-[2021-08-13T23:51:29.881Z] Comes into orchestrator
-[2021-08-13T23:51:29.882Z] Hello Tokyo! Process duration: 2021-08-14T09:21:21.661636 - 2021-08-14T09:21:24.377630
-[2021-08-13T23:51:29.883Z] Executed 'Functions.orchestrator' (Succeeded, Id=72c21530-023a-40a5-bfe3-8f072fe4f793, Duration=9ms)
-[2021-08-13T23:51:29.976Z] Executing 'Functions.worker' (Reason='(null)', Id=d85669e7-d7f8-4919-905c-da441f92b09b)
-[2021-08-13T23:51:38.603Z] Executed 'Functions.worker' (Succeeded, Id=d85669e7-d7f8-4919-905c-da441f92b09b, Duration=8627ms)
-[2021-08-13T23:51:38.866Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=47309ba9-5ec3-4af2-a0f6-ed68dbc5388d)
-[2021-08-13T23:51:38.871Z] Comes into orchestrator
-[2021-08-13T23:51:38.871Z] Hello Tokyo! Process duration: 2021-08-14T09:21:21.661636 - 2021-08-14T09:21:24.377630
-[2021-08-13T23:51:38.871Z] Hello Adelaide Hello London Hello Seattle Hello Tokyo! Process duration: 2021-08-14T09:21:21.661636 - 2021-08-14T09:21:24.377630! Process duration: 2021-08-14T09:21:24.864269 - 2021-08-14T09:21:26.350129! Process duration: 2021-08-14T09:21:26.731476 - 2021-08-14T09:21:29.607388! Process duration: 2021-08-14T09:21:29.978454 - 2021-08-14T09:21:38.599091
+[2021-08-14T01:38:18.138Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=d7ccbe5b-8edf-42d5-abd1-d22cf2cf6b8b)
+[2021-08-14T01:38:18.149Z] Comes into orchestrator
+[2021-08-14T01:38:18.166Z] Executed 'Functions.orchestrator' (Succeeded, Id=d7ccbe5b-8edf-42d5-abd1-d22cf2cf6b8b, Duration=34ms)
+[2021-08-14T01:38:18.337Z] Executing 'Functions.worker' (Reason='(null)', Id=9f1b5db1-8e8f-490f-9a42-9b4ac4b00b49)
+[2021-08-14T01:38:23.462Z] Executed 'Functions.worker' (Succeeded, Id=9f1b5db1-8e8f-490f-9a42-9b4ac4b00b49, Duration=5127ms)
+[2021-08-14T01:38:23.775Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=ad21e972-0229-4f15-a438-e066ece5d241)
+[2021-08-14T01:38:23.779Z] Comes into orchestrator
+[2021-08-14T01:38:23.779Z] Hello Tokyo! Process duration: 2021-08-14T11:08:18.338901 - 2021-08-14T11:08:23.460011
+[2021-08-14T01:38:23.782Z] Executed 'Functions.orchestrator' (Succeeded, Id=ad21e972-0229-4f15-a438-e066ece5d241, Duration=8ms)
+[2021-08-14T01:38:24.132Z] Executing 'Functions.worker' (Reason='(null)', Id=284b1f44-32d5-4a8f-9580-9e86549a5c99)
+[2021-08-14T01:38:25.593Z] Executed 'Functions.worker' (Succeeded, Id=284b1f44-32d5-4a8f-9580-9e86549a5c99, Duration=1461ms)
+[2021-08-14T01:38:25.885Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=6e183685-595e-45c7-9304-5a29e10509c1)
+[2021-08-14T01:38:25.889Z] Comes into orchestrator
+[2021-08-14T01:38:25.889Z] Hello Tokyo! Process duration: 2021-08-14T11:08:18.338901 - 2021-08-14T11:08:23.460011
+[2021-08-14T01:38:25.890Z] Executed 'Functions.orchestrator' (Succeeded, Id=6e183685-595e-45c7-9304-5a29e10509c1, Duration=5ms)
+[2021-08-14T01:38:25.988Z] Executing 'Functions.worker' (Reason='(null)', Id=cc84dfaf-b1de-443c-af85-b58fc5c92133)
+[2021-08-14T01:38:27.757Z] Executed 'Functions.worker' (Succeeded, Id=cc84dfaf-b1de-443c-af85-b58fc5c92133, Duration=1769ms)
+[2021-08-14T01:38:28.032Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=8bb97097-9c65-40b6-9ba7-e1a1bb98cdcf)
+[2021-08-14T01:38:28.038Z] Comes into orchestrator
+[2021-08-14T01:38:28.039Z] Hello Tokyo! Process duration: 2021-08-14T11:08:18.338901 - 2021-08-14T11:08:23.460011
+[2021-08-14T01:38:28.041Z] Executed 'Functions.orchestrator' (Succeeded, Id=8bb97097-9c65-40b6-9ba7-e1a1bb98cdcf, Duration=9ms)
+[2021-08-14T01:38:28.133Z] Executing 'Functions.worker' (Reason='(null)', Id=9db0bc65-ab85-4d8e-a17c-81e88891a57f)
+[2021-08-14T01:38:35.725Z] Executed 'Functions.worker' (Succeeded, Id=9db0bc65-ab85-4d8e-a17c-81e88891a57f, Duration=7592ms)
+[2021-08-14T01:38:36.048Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=c5ae7e21-69cf-4e4a-8f54-379f9ef69e63)
+[2021-08-14T01:38:36.054Z] Comes into orchestrator
+[2021-08-14T01:38:36.054Z] Hello Tokyo! Process duration: 2021-08-14T11:08:18.338901 - 2021-08-14T11:08:23.460011
+[2021-08-14T01:38:36.054Z] Hello Tokyo! Process duration: 2021-08-14T11:08:18.338901 - 2021-08-14T11:08:23.460011, Hello Seattle! Process duration: 2021-08-14T11:08:24.133836 - 2021-08-14T11:08:25.589980, Hello London! Process duration: 2021-08-14T11:08:25.990070 - 2021-08-14T11:08:27.756051, Hello Adelaide! Process duration: 2021-08-14T11:08:28.135911 - 2021-08-14T11:08:35.723287
+[2021-08-14T01:38:36.058Z] Executed 'Functions.orchestrator' (Succeeded, Id=c5ae7e21-69cf-4e4a-8f54-379f9ef69e63, Duration=10ms)
 ```
 ```json
 {
     "name": "orchestrator",
-    "instanceId": "9ebd32802d92461e827d5ad8eb6a64c4",
+    "instanceId": "e733e0b071c74fe59ceb74b62a8aba12",
     "runtimeStatus": "Completed",
     "input": null,
     "customStatus": null,
-    "output": "Hello Adelaide Hello London Hello Seattle Hello Tokyo! Process duration: 2021-08-14T09:21:21.661636 - 2021-08-14T09:21:24.377630! Process duration: 2021-08-14T09:21:24.864269 - 2021-08-14T09:21:26.350129! Process duration: 2021-08-14T09:21:26.731476 - 2021-08-14T09:21:29.607388! Process duration: 2021-08-14T09:21:29.978454 - 2021-08-14T09:21:38.599091",
-    "createdTime": "2021-08-13T23:51:20Z",
-    "lastUpdatedTime": "2021-08-13T23:51:38Z"
+    "output": "Hello Tokyo! Process duration: 2021-08-14T11:08:18.338901 - 2021-08-14T11:08:23.460011, Hello Seattle! Process duration: 2021-08-14T11:08:24.133836 - 2021-08-14T11:08:25.589980, Hello London! Process duration: 2021-08-14T11:08:25.990070 - 2021-08-14T11:08:27.756051, Hello Adelaide! Process duration: 2021-08-14T11:08:28.135911 - 2021-08-14T11:08:35.723287",
+    "createdTime": "2021-08-14T01:38:17Z",
+    "lastUpdatedTime": "2021-08-14T01:38:36Z"
 }
 ```
 
-**Chaining 4 activities: 4 yields, 4 + 1 histories, worker returns f"Hello {name}!"**
-```log
-[2021-08-14T00:15:35.778Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=909fcf1e-6dee-4ccd-b77b-9e910fb00516)
-[2021-08-14T00:15:35.788Z] Comes into orchestrator
-[2021-08-14T00:15:35.806Z] Executed 'Functions.orchestrator' (Succeeded, Id=909fcf1e-6dee-4ccd-b77b-9e910fb00516, Duration=36ms)
-[2021-08-14T00:15:35.965Z] Executing 'Functions.simple_worker' (Reason='(null)', Id=04a6429b-4eb1-4db6-8b00-40b2657f008b)
-[2021-08-14T00:15:35.968Z] Executed 'Functions.simple_worker' (Succeeded, Id=04a6429b-4eb1-4db6-8b00-40b2657f008b, Duration=4ms)
-[2021-08-14T00:15:36.275Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=74a2a214-e78f-4ded-810a-dea9ccfa3a8c)
-[2021-08-14T00:15:36.278Z] Comes into orchestrator
-[2021-08-14T00:15:36.278Z] Hello Tokyo!
-[2021-08-14T00:15:36.282Z] Executed 'Functions.orchestrator' (Succeeded, Id=74a2a214-e78f-4ded-810a-dea9ccfa3a8c, Duration=8ms)
-[2021-08-14T00:15:36.413Z] Executing 'Functions.simple_worker' (Reason='(null)', Id=104dbb81-8127-4e80-86f8-d6bfa811e630)
-[2021-08-14T00:15:36.415Z] Executed 'Functions.simple_worker' (Succeeded, Id=104dbb81-8127-4e80-86f8-d6bfa811e630, Duration=2ms)
-[2021-08-14T00:15:36.670Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=306acdd2-4f63-4502-9c53-ad69b50abda8)
-[2021-08-14T00:15:36.674Z] Comes into orchestrator
-[2021-08-14T00:15:36.674Z] Hello Tokyo!
-[2021-08-14T00:15:36.675Z] Hello Seattle Hello Tokyo!!
-[2021-08-14T00:15:36.675Z] Executed 'Functions.orchestrator' (Succeeded, Id=306acdd2-4f63-4502-9c53-ad69b50abda8, Duration=6ms)
-[2021-08-14T00:15:36.788Z] Executing 'Functions.simple_worker' (Reason='(null)', Id=c18e0420-37e0-47fe-8ac4-816cfff30f2c)
-[2021-08-14T00:15:36.791Z] Executed 'Functions.simple_worker' (Succeeded, Id=c18e0420-37e0-47fe-8ac4-816cfff30f2c, Duration=2ms)
-[2021-08-14T00:15:37.075Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=967b41d3-7f59-436f-83e8-e7f9a1579eb3)
-[2021-08-14T00:15:37.079Z] Comes into orchestrator
-[2021-08-14T00:15:37.080Z] Hello Tokyo!
-[2021-08-14T00:15:37.080Z] Hello Seattle Hello Tokyo!!
-[2021-08-14T00:15:37.080Z] Hello London Hello Seattle Hello Tokyo!!!
-[2021-08-14T00:15:37.080Z] Executed 'Functions.orchestrator' (Succeeded, Id=967b41d3-7f59-436f-83e8-e7f9a1579eb3, Duration=6ms)
-[2021-08-14T00:15:37.227Z] Executing 'Functions.simple_worker' (Reason='(null)', Id=0faff7ac-9c0b-45fd-88c0-2407c90fd6a1)
-[2021-08-14T00:15:37.230Z] Executed 'Functions.simple_worker' (Succeeded, Id=0faff7ac-9c0b-45fd-88c0-2407c90fd6a1, Duration=2ms)
-[2021-08-14T00:15:37.498Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=f118cf91-0ee7-43a4-a366-2e446bf0e0c2)
-[2021-08-14T00:15:37.504Z] Comes into orchestrator
-[2021-08-14T00:15:37.504Z] Hello Tokyo!
-[2021-08-14T00:15:37.504Z] Hello Seattle Hello Tokyo!!
-[2021-08-14T00:15:37.504Z] Hello London Hello Seattle Hello Tokyo!!!
-[2021-08-14T00:15:37.504Z] Hello Adelaide Hello London Hello Seattle Hello Tokyo!!!!
-[2021-08-14T00:15:37.509Z] Executed 'Functions.orchestrator' (Succeeded, Id=f118cf91-0ee7-43a4-a366-2e446bf0e0c2, Duration=11ms)
-```
-```json
-{
-    "name": "orchestrator",
-    "instanceId": "6fc17c687df64672919ea853a6dee751",
-    "runtimeStatus": "Completed",
-    "input": null,
-    "customStatus": null,
-    "output": "Hello Adelaide Hello London Hello Seattle Hello Tokyo!!!!",
-    "createdTime": "2021-08-14T00:15:35Z",
-    "lastUpdatedTime": "2021-08-14T00:15:37Z"
-}
-```
+
 **Run with default settings, no forced concurrency**
 ```json
 {
