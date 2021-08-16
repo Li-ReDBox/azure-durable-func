@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import azure.durable_functions as df
 
-from orchestrator import orchestrator_chain, orchestrator_fan
+from orchestrator import orchestrator_chain, orchestrator_fan, orchestrator_activity_chain
 
 # side_effect function for returning various values depending on args.
 def spy(activity:str, location:str):
@@ -19,17 +19,30 @@ class DurableFunctionsOrchestratorTestCase(TestCase):
             mock.call_activity.side_effect = spy
             result = list(orchestrator_chain(mock))
 
-            self.assertEqual(4,len(result))
-            self.assertEqual('Hello Tokyo!',result[0])
+        print(result)
+        self.assertEqual(4, len(result))
+        self.assertEqual('Hello Tokyo!',result[0])
+        self.assertEqual('Hello Adelaide!',result[3])
 
     def test_fan(self):
-        """orchestrator_fan returns a single collection of tasks"""
+        """orchestrator_fan returns a single yield collection of tasks"""
         with patch('azure.durable_functions.DurableOrchestrationContext',spec=df.DurableOrchestrationContext) as mock:
             mock.call_activity.side_effect = spy
             mock.task_all.side_effect = lambda *args: args
             tasks = orchestrator_fan(mock)
-            # why the generator is a single element of tuple?
+            # Here is a difference of result of task_all
+            # why the generator is a tuple if a single element?
             result = next(tasks)[0]
+        print(result)
+        self.assertEqual(4, len(result))
+        self.assertEqual('Hello Tokyo!',result[0])
+        self.assertEqual('Hello Adelaide!',result[3])
 
-            self.assertEqual(4, len(result))
-            self.assertEqual('Hello Tokyo!',result[0])
+    def test_orchestrator_activity_chain(self):
+        """orchestrator_activity_chain throw exception TypeError, cannot be tested"""
+        # It needs some effort to set up a relay in test, so the orchestrator chaing results cannot be tested.
+        with patch('azure.durable_functions.DurableOrchestrationContext',spec=df.DurableOrchestrationContext) as mock:
+            mock.call_activity.side_effect = spy
+            with self.assertRaises(TypeError) as cm:
+                list(orchestrator_activity_chain(mock))
+        self.assertIsInstance(cm.exception, TypeError)

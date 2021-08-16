@@ -33,6 +33,11 @@ Functions:
 For detailed output, run func with --verbose flag.
 ```
 
+## Run unit tests
+```shell
+python -m unittest tests/test_orchestrator.py
+```
+
 ## Trigger locally
 ```shell
 curl -v http://localhost:7071/api/orchestrators/orchestrator
