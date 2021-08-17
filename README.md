@@ -57,6 +57,11 @@ curl -v http://localhost:7071/api/orchestrators/orchestrator
 
 
 ## replay history: need to pay attention what code to put in the orchestrator function
+Every time orchestrator encounters a yield, it marks a stop point, gives up. Once the yield is completed, the result is recorded.
+The return value of orchestrator is no different to normal function. But in unit tests, because there is no druable framework to
+replay, it becomes a normal generator, so it returns a generator of those yields.  Therefore unit test of orchestrators with chaining
+yields cannot be tested directly.
+
 **Three activities: 3 + 1 histories**
 ```log
 [2021-07-06T07:28:04.447Z] Executing 'Functions.orchestrator' (Reason='(null)', Id=ad2da907-a59f-40e6-9f28-da2971bd4d1a)

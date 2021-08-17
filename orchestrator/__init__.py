@@ -12,6 +12,16 @@ def orchestrator_chain(context: df.DurableOrchestrationContext):
     return [result1, result2, result3, result4]
 
 
+def orchestrator_partial_return(context: df.DurableOrchestrationContext):
+    """Only the results of the second and fourth activity functions are returned to HTTP status"""
+    print("Comes into orchestrator")
+    yield context.call_activity('worker', "Tokyo")
+    result2 = yield context.call_activity('worker', "Seattle")
+    yield context.call_activity('worker', "London")
+    result4 = yield context.call_activity('worker', "Adelaide")
+    return [result2, result4]
+
+
 def orchestrator_fan(context: df.DurableOrchestrationContext):
     print("Comes into orchestrator")
     tasks = []
@@ -46,7 +56,7 @@ def orchestrator_simple_chain(context: df.DurableOrchestrationContext):
 
 
 def orchestrator_no_return(context: df.DurableOrchestrationContext):
-    # This does not work: F* functions do not exist, they don't return values.
+    # This returns a value once everything is done, but the retrun value cannot be tested
     print("Comes into orchestrator")
     yield context.call_activity("simple_worker", None)
 
@@ -54,5 +64,6 @@ def orchestrator_no_return(context: df.DurableOrchestrationContext):
         yield context.call_activity("simple_worker", b)
 
     yield context.call_activity("simple_worker", "dummy")
+    return "This is done"
 
-main = df.Orchestrator.create(orchestrator_no_return)
+main = df.Orchestrator.create(orchestrator_partial_return)
