@@ -4,12 +4,17 @@ from unittest.mock import patch
 
 import azure.durable_functions as df
 
-from orchestrator import orchestrator_chain, orchestrator_fan, orchestrator_activity_chain
+from orchestrator import orchestrator_chain, orchestrator_fan, orchestrator_activity_chain, orchestrator_no_return
 
 # side_effect function for returning various values depending on args.
 def spy(activity:str, location:str):
     print("Spying in activity function '%s'" % activity, "with value %s" % location)
     return f'Hello {location}!'
+
+
+def disappear(activity:str, location:str):
+    print("Spying in activity function '%s'" % activity, "with value %s" % location)
+
 
 class DurableFunctionsOrchestratorTestCase(TestCase):
 
@@ -46,3 +51,13 @@ class DurableFunctionsOrchestratorTestCase(TestCase):
             with self.assertRaises(TypeError) as cm:
                 list(orchestrator_activity_chain(mock))
         self.assertIsInstance(cm.exception, TypeError)
+
+    def test_orchestrator_no_return(self):
+        """orchestrator_no_return has 5 yields, but the values are not captured"""
+        with patch('azure.durable_functions.DurableOrchestrationContext',spec=df.DurableOrchestrationContext) as mock:
+            mock.call_activity.side_effect = disappear
+            result = list(orchestrator_no_return(mock))
+
+        self.assertEqual(5, len(result))
+        for n in result:
+            self.assertIsNone(n)

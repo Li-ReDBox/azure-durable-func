@@ -45,4 +45,14 @@ def orchestrator_simple_chain(context: df.DurableOrchestrationContext):
     return result4
 
 
-main = df.Orchestrator.create(orchestrator_activity_chain)
+def orchestrator_no_return(context: df.DurableOrchestrationContext):
+    # This does not work: F* functions do not exist, they don't return values.
+    print("Comes into orchestrator")
+    yield context.call_activity("simple_worker", None)
+
+    for b in ("1", "2", "3"):
+        yield context.call_activity("simple_worker", b)
+
+    yield context.call_activity("simple_worker", "dummy")
+
+main = df.Orchestrator.create(orchestrator_no_return)

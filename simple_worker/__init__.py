@@ -4,6 +4,10 @@
 
 def main(name: str) -> str:
     print("In ", __name__, name, " has type of", type(name))
+
+    if name is None:
+        return ""
+
     city = name.split(" ")
     if len(city) == 1:
         return f"Hello {name}!"
