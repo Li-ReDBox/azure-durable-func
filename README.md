@@ -273,3 +273,11 @@ The language runtime you select may impose strict concurrency restrictions on yo
 Python places a restriction on concurrency, you should update the Durable Functions concurrency settings to match the concurrency settings of Python. This ensures that the Durable Functions runtime will not attempt to run more functions concurrently than is allowed by Python runtime, allowing any pending activities to be load balanced to other VMs. For example, if you have a Python app that restricts concurrency to 4 functions (perhaps it's only configured with 4 threads on a single language worker process or 1 thread on 4 language worker processes) then you should configure both `maxConcurrentOrchestratorFunctions` and `maxConcurrentActivityFunctions` to `4`.
 
 For more information and performance recommendations for Python, see [Improve throughput performance of Python apps](https://docs.microsoft.com/en-us/azure/azure-functions/python-scale-performance-reference) in Azure Functions. The techniques mentioned in this Python developer reference documentation can have a substantial impact on Durable Functions performance and scalability.
+
+**Activity function has to return a _deterministic_ value
+An Activity function has to return a value to orchestrator even in code logic the return value is not meaningful at. A simple `return True` is good enough. The MS DF orchestrator framework needs an acknowledge of the state of an activity function for its management.
+
+```log
+[2021-10-13T22:43:23.449Z] Executed 'Functions.orchestrator' (Failed, Id=763e2f42-607b-47ab-8486-4ec111aa67fb, Duration=31ms)
+[2021-10-13T22:43:23.449Z] System.Private.CoreLib: Exception while executing function: Functions.orchestrator. Microsoft.Azure.WebJobs.Extensions.DurableTask: Orchestrator function 'orchestrator' failed: the JSON object must be str, bytes or bytearray, not NoneType.
+```
